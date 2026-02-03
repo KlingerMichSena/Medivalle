@@ -1,0 +1,31 @@
+Para  abrir el terminal: CTRL + Ñ
+Para instalar Django; pip install django
+Verifica que se haya instalado correctamente: django-admin
+Creamos nuestro proyecto: django-admin startproject medivalle
+Para entrar al proyecto: cd medivalle
+para migrar la DB y aplicar cambios pendientes: python manage.py migrate
+Arranca un servidor web local:python manage.py runserver
+Para salir del servidor web: CTRL + C
+Estos dos siempre se deben tirar migrar y crear datos de prueba:
+python manage.py makemigrations
+python manage.py migrate
+
+
+----------- Para crear usuario administrador
+python manage.py createsuperuser
+user:admin
+email:trabajos.klinger@gmail.com
+Pass:Admin2025*
+http://127.0.0.1:8000/admin/login/?next=/admin/
+
+----------- URL principal
+http://127.0.0.1:8000/usuarios/login/
+CC 1234567890
+
+----- Activar mi entorno virtual
+cd D:\MisProyectos
+.\.venv\Scripts\activate
+
+python manage.py runserver
+
+
