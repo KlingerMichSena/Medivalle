@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos a Tiempo - MEDIVALLE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand img {
+            height: 60px;
+        }
+        .dropdown-item.text-danger:hover {
+            background-color: #f8d7da !important;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<!-- ENCABEZADO / NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <div class="d-flex align-items-center">
+      <img src="{% static 'img/logo.png' %}" alt="Logo" class="me-2" style="width: 60px; height: auto;">
+      <span class="navbar-brand fw-bold">MEDICAMENTOS A TIEMPO - MEDIVALLE</span>
+    </div>
+
+    <!-- Menú hamburguesa -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Opciones del menú -->
+    <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'bienvenida' tipo_doc num_doc %}">🏙️ Seleccionar Departamento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger fw-bold" href="{% url 'login' %}">🚪 Cerrar Sesión</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mt-5 pt-5">
+    <div class="text-center mb-4">
+<!--     <h2 class="fw-bold text-primary">💊 MEDICAMENTOS A TIEMPO - MEDIVALLE</h2> -->  
+        <p><strong>Departamento:</strong> {{ departamento }}</p>
+    </div>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h5 class="mb-3 text-secondary">Registrar nuevo medicamento</h5>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <input type="text" name="codigo_producto" class="form-control" placeholder="Código" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="descripcion_producto" class="form-control" placeholder="Descripción" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="gramaje" class="form-control" placeholder="Gramaje" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="farmacia" class="form-control" placeholder="Farmacia" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="direccion" class="form-control" placeholder="Dirección" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="ciudad" class="form-control" placeholder="Ciudad" required>
+                </div>
+                <div class="col-md-1">
+                    <input type="number" name="cantidad" class="form-control" placeholder="Cant." min="0" required>
+                </div>
+            </div>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-success">➕ Registrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FORMULARIO DE BÚSQUEDA -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h5 class="mb-3 text-secondary">🔍 Buscar medicamentos</h5>
+        <form method="GET" class="row g-3">
+            <!-- Campo Código con autocompletar -->
+            <div class="col-md-3">
+                <input list="lista_codigos" name="codigo" class="form-control" placeholder="Código producto" value="{{ codigo }}">
+                <datalist id="lista_codigos">
+                    {% for m in medicamentos %}
+                        <option value="{{ m.codigo_producto }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <!-- Campo Ciudad con autocompletar -->
+            <div class="col-md-3">
+                <input list="lista_ciudades" name="ciudad" class="form-control" placeholder="Ciudad" value="{{ ciudad }}">
+                <datalist id="lista_ciudades">
+                    {% for m in medicamentos %}
+                        <option value="{{ m.ciudad }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <!-- Campo Descripción con autocompletar -->
+            <div class="col-md-4">
+                <input list="lista_descripciones" name="descripcion" class="form-control" placeholder="Descripción" value="{{ descripcion }}">
+                <datalist id="lista_descripciones">
+                    {% for m in medicamentos %}
+                        <option value="{{ m.descripcion_producto }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <div class="col-md-2 text-end">
+                <button type="submit" class="btn btn-primary w-100">Consultar</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- TABLA CRUD -->
+    <div class="card shadow-sm p-4">
+        <h5 class="mb-3 text-secondary">Listado de medicamentos</h5>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <table class="table table-striped text-center align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Gramaje</th>
+                    <th>Farmacia</th>
+                    <th>Dirección</th>
+                    <th>Ciudad</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in medicamentos %}
+                    {% with estado=m.estado_color %}
+                    <tr>
+                        <td>{{ m.codigo_producto }}</td>
+                        <td>{{ m.descripcion_producto }}</td>
+                        <td>{{ m.gramaje }}</td>
+                        <td>{{ m.farmacia }}</td>
+                        <td>{{ m.direccion }}</td>
+                        <td>{{ m.ciudad }}</td>
+                        <td>{{ m.cantidad }}</td>
+                        <td><span class="badge bg-{{ estado.1 }}">{{ estado.0 }}</span></td>
+                        <td>{{ m.fecha_actualizacion|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'editar_medicamento' tipo_doc num_doc departamento m.codigo_producto %}" 
+                               class="btn btn-sm btn-warning">✏️</a>
+                            <a href="{% url 'eliminar_medicamento' tipo_doc num_doc departamento m.codigo_producto %}" 
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('¿Deseas eliminar este medicamento?')">🗑️</a>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% empty %}
+                    <tr><td colspan="10" class="text-muted">No hay medicamentos registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

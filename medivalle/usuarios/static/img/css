@@ -1,0 +1,21 @@
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    height: 70px;          /* tamaño más grande */
+    width: auto;           /* mantiene proporciones */
+    object-fit: contain;   /* asegura que no se deforme */
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da !important;
+}
+
+/* Centrado vertical y separación correcta */
+.navbar .navbar-brand,
+.navbar .dropdown {
+    display: flex;
+    align-items: center;
+}
